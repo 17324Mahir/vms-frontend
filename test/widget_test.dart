@@ -27,13 +27,43 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('1. Login screen renders with Stark Group branding and input fields',
+  testWidgets('0. Home screen renders at root with branding, features, and action buttons',
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1280, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() => tester.view.resetPhysicalSize());
 
     await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('STARK GROUP'), findsAtLeast(1));
+    expect(find.text('Stark Industries Fleet Enterprise Portal'), findsOneWidget);
+    expect(find.text('Sign In'), findsAtLeast(1));
+    expect(find.text('Register Account'), findsOneWidget);
+  });
+
+  testWidgets('0b. Register screen renders input fields and navigates to sign in',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.registerRoute));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Create an Account'), findsOneWidget);
+    expect(find.text('Full Name *'), findsOneWidget);
+    expect(find.text('Email Address *'), findsOneWidget);
+    expect(find.text('Register & Access Fleet'), findsOneWidget);
+  });
+
+  testWidgets('1. Login screen renders with Stark Group branding and input fields',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
 
     expect(find.text('STARK GROUP'), findsOneWidget);
@@ -49,7 +79,7 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() => tester.view.resetPhysicalSize());
 
-    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
 
     // 1. Submit empty form
@@ -211,25 +241,25 @@ void main() {
     // 1440px desktop
     tester.view.physicalSize = const Size(1440, 900);
     tester.view.devicePixelRatio = 1.0;
-    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
     expect(find.byType(Card), findsWidgets);
 
     // 1024px tablet
     tester.view.physicalSize = const Size(1024, 768);
-    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
     expect(find.byType(Card), findsWidgets);
 
     // 768px small tablet
     tester.view.physicalSize = const Size(768, 1024);
-    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
     expect(find.byType(Card), findsWidgets);
 
     // 390px mobile
     tester.view.physicalSize = const Size(390, 844);
-    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpWidget(const StarkVmsApp(initialRoute: AppRouter.loginRoute));
     await tester.pumpAndSettle();
     expect(find.byType(Card), findsWidgets);
 

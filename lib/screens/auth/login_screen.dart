@@ -138,7 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         _buildPasswordField(),
                         const SizedBox(height: AppTheme.space24),
                         _buildSubmitButton(),
-                        const SizedBox(height: AppTheme.space24),
+                        const SizedBox(height: AppTheme.space16),
+                        _buildRegisterLink(),
+                        const SizedBox(height: AppTheme.space16),
                         _buildSecurityNotice(),
                       ],
                     ),
@@ -373,6 +375,36 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             )
           : const Text('Sign in'),
+    );
+  }
+
+  Widget _buildRegisterLink() {
+    return Column(
+      children: [
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            const Text(
+              "Don't have an account? ",
+              style: TextStyle(fontSize: 13, color: AppTheme.textMuted),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed(AppRouter.registerRoute);
+              },
+              child: const Text('Register here', style: TextStyle(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+        TextButton.icon(
+          onPressed: () {
+            Navigator.of(context).pushReplacementNamed(AppRouter.homeRoute);
+          },
+          icon: const Icon(Icons.arrow_back, size: 14),
+          label: const Text('Return to Home', style: TextStyle(fontSize: 12)),
+        ),
+      ],
     );
   }
 

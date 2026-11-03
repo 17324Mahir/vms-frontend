@@ -40,4 +40,7 @@ class ApiConfig {
 
   /// Authentication login endpoint URI: `${baseUri}/api/auth/login`
   static Uri get authLoginUri => baseUri.replace(path: '/api/auth/login');
+
+  /// Authentication register endpoint URI: `${baseUri}/api/auth/register`
+  static Uri get authRegisterUri => baseUri.replace(path: '/api/auth/register');
 }

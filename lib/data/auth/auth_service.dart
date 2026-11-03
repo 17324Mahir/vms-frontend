@@ -148,6 +148,105 @@ class AuthService {
     }
   }
 
+  /// Registers a new user account against `POST /api/auth/register`.
+  Future<AuthSession> register(
+    String name,
+    String email,
+    String password, {
+    http.Client? client,
+    Duration timeout = const Duration(seconds: 15),
+  }) async {
+    final httpClient = client ?? http.Client();
+    final isCustomClient = client != null;
+
+    try {
+      final response = await httpClient
+          .post(
+            ApiConfig.authRegisterUri,
+            headers: const {
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode({
+              'name': name.trim(),
+              'email': email.trim(),
+              'password': password.trim(),
+            }),
+          )
+          .timeout(timeout);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is! Map<String, dynamic>) {
+          throw const FormatException('Expected JSON object in register response.');
+        }
+
+        final accessToken = decoded['accessToken'] as String? ?? '';
+        final tokenType = decoded['tokenType'] as String? ?? 'Bearer';
+        final expiresIn = (decoded['expiresIn'] as num?)?.toInt() ?? 900;
+        final userMap = decoded['user'] as Map<String, dynamic>? ?? {};
+        final user = AuthUser.fromJson(userMap);
+
+        final session = AuthSession(
+          accessToken: accessToken,
+          tokenType: tokenType,
+          expiresIn: expiresIn,
+          expiresAt: DateTime.now().add(Duration(seconds: expiresIn)),
+          user: user,
+          sessionId: ++_sessionCounter,
+        );
+
+        _currentSession = session;
+        sessionExpiredMessage.value = null;
+        sessionNotifier.value = session;
+        return session;
+      }
+
+      throw _parseRegisterError(response);
+    } on TimeoutException catch (e) {
+      throw NetworkException(
+        'Connection timed out while attempting to register. Please verify the backend is running.',
+        e,
+      );
+    } on SocketException catch (e) {
+      throw NetworkException(
+        'Unable to connect to the registration service. Please check your network connection.',
+        e,
+      );
+    } on http.ClientException catch (e) {
+      throw NetworkException(
+        'Network error during registration: ${e.message}',
+        e,
+      );
+    } finally {
+      if (!isCustomClient) {
+        httpClient.close();
+      }
+    }
+  }
+
+  ApiException _parseRegisterError(http.Response response) {
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) {
+        final code = decoded['code'] as String? ?? 'HTTP_${response.statusCode}';
+        final message = decoded['message'] as String? ?? 'Registration failed.';
+        return ApiException(
+          statusCode: (decoded['status'] as num?)?.toInt() ?? response.statusCode,
+          code: code,
+          message: message,
+          path: decoded['path'] as String?,
+        );
+      }
+    } catch (_) {}
+
+    return ApiException(
+      statusCode: response.statusCode,
+      code: 'HTTP_${response.statusCode}',
+      message: 'Registration failed with status code ${response.statusCode}.',
+    );
+  }
+
   /// Centrally handles 401 Unauthorized responses emitted by protected API endpoints.
   /// Prevents race conditions from older expired requests clearing a newer active session.
   void handleUnauthorized({int? forSessionId, String? reason}) {

@@ -9,7 +9,12 @@ void main() {
 
 /// Root application widget for Stark Group Vehicle Management System (VMS).
 class StarkVmsApp extends StatelessWidget {
-  const StarkVmsApp({super.key});
+  final String initialRoute;
+
+  const StarkVmsApp({
+    super.key,
+    this.initialRoute = AppRouter.homeRoute,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,7 @@ class StarkVmsApp extends StatelessWidget {
       title: 'Stark Group - Vehicle Management System',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRouter.loginRoute,
+      initialRoute: initialRoute,
       onGenerateRoute: AppRouter.generateRoute,
     );
   }
