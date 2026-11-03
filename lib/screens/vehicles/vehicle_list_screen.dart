@@ -128,7 +128,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
             SnackBar(
               content: Text(
                   'Vehicle ${vehicle.vehicleNumber} was already removed or is unavailable.'),
-              backgroundColor: const Color(0xFFD97706),
+              backgroundColor: AppTheme.statusMaintenanceText,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -323,9 +323,9 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF2F2), // Red 50
+        color: AppTheme.errorRedBg,
         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-        border: Border.all(color: const Color(0xFFFECACA)), // Red 200
+        border: Border.all(color: AppTheme.errorRedBorder),
       ),
       child: Row(
         children: [
@@ -601,7 +601,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   TableRow _buildTableHeaderRow() {
     return TableRow(
       decoration: const BoxDecoration(
-        color: Color(0xFFF8FAFC),
+        color: AppTheme.canvasLight,
         border:
             Border(bottom: BorderSide(color: AppTheme.borderNeutral, width: 1)),
       ),
@@ -688,7 +688,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color: AppTheme.borderSubtle,
                 borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                 border: Border.all(color: AppTheme.borderNeutral),
               ),
@@ -817,7 +817,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: AppTheme.borderSubtle,
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         border: Border.all(color: AppTheme.borderNeutral),
                       ),

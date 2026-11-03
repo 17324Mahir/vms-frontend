@@ -301,7 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.next,
           onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
           decoration: const InputDecoration(
-            hintText: 'user@starkgroup.test',
+            hintText: 'name@company.com',
           ),
           validator: (value) {
             final trimmed = value?.trim() ?? '';
@@ -411,7 +411,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSecurityNotice() {
     return const Center(
       child: Text(
-        'Protected by Spring Security · Signed JWT Bearer Authentication\nTokens are stored in memory only and expire after 15 minutes',
+        'Protected by Secure Account Authentication\nSessions are stored in memory only and expire after 15 minutes of inactivity',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 11,

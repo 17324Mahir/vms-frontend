@@ -3,18 +3,18 @@ import '../../core/theme/app_theme.dart';
 import '../../data/auth/auth_service.dart';
 import '../../router/app_router.dart';
 
-/// Beautiful, professional, animated public landing page for Stark Group VMS.
+/// Beautiful, professional, unified public landing page for Stark Group VMS.
 ///
 /// Features:
+/// - Light neutral canvas (#F8FAFC) with deep navy brand header (#0F172A).
 /// - Responsive navigation header with section scrolling & mobile drawer.
-/// - Fluid hero section with native fade & slide animations.
-/// - Polished code-built mock preview of fleet registry (strictly illustrative).
-/// - 6 core product capabilities matching implemented architecture.
+/// - Restrained fade & slide hero entrance respecting reduced-motion settings.
+/// - Crisp code-built fictional mock preview matching internal light theme.
+/// - 6 core product capabilities with business-oriented language.
 /// - 3-step "How It Works" workflow overview.
 /// - Interactive tabbed product preview (Registry Table & Registration Form).
-/// - Live cloud infrastructure status indicator.
-/// - High-contrast closing CTA and accessible footer.
-/// - Full reduced-motion and accessibility support.
+/// - System status indicator and closing CTA.
+/// - Full accessibility and responsive layout across desktop, tablet, and mobile.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -22,13 +22,10 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _heroController;
   late final Animation<double> _heroFadeAnimation;
   late final Animation<Offset> _heroSlideAnimation;
-
-  late final AnimationController _pulseController;
-  late final Animation<double> _pulseAnimation;
 
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _capabilitiesKey = GlobalKey();
@@ -44,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _heroController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 450),
     );
 
     _heroFadeAnimation = CurvedAnimation(
@@ -53,29 +50,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
 
     _heroSlideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.08),
+      begin: const Offset(0, 0.05),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _heroController,
       curve: Curves.easeOutCubic,
     ));
-
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    );
-
-    // Run pulse animation; in automated tests forward once to avoid pumpAndSettle timeout
-    final isTesting = WidgetsBinding.instance.runtimeType.toString().contains('Test');
-    if (!isTesting) {
-      _pulseController.repeat(reverse: true);
-    } else {
-      _pulseController.forward();
-    }
-
-    _pulseAnimation = Tween<double>(begin: 0.35, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
 
     _heroController.forward();
   }
@@ -83,17 +63,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Respect reduced motion system preference
-    if (MediaQuery.of(context).disableAnimations) {
+    // Respect system reduced-motion preferences
+    if (MediaQuery.maybeOf(context)?.disableAnimations == true) {
       _heroController.value = 1.0;
-      _pulseController.stop();
     }
   }
 
   @override
   void dispose() {
     _heroController.dispose();
-    _pulseController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -103,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (ctx != null) {
       Scrollable.ensureVisible(
         ctx,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOutCubic,
       );
     }
@@ -112,14 +90,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _openMobileMenu(bool isAuthenticated) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF0B1329),
+      backgroundColor: AppTheme.surfaceWhite,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) {
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,46 +108,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     const Text(
                       'STARK GROUP VMS',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
-                        color: Colors.white,
+                        letterSpacing: 1.1,
+                        color: AppTheme.textDark,
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Color(0xFF94A3B8)),
+                      icon: const Icon(Icons.close, color: AppTheme.textMuted, size: 20),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
                 ),
-                const Divider(color: Color(0xFF1E293B)),
+                const Divider(color: AppTheme.borderNeutral),
                 ListTile(
-                  leading: const Icon(Icons.featured_play_list_outlined, color: Color(0xFF60A5FA), size: 20),
-                  title: const Text('Capabilities', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  leading: const Icon(Icons.featured_play_list_outlined, color: AppTheme.primaryBlue, size: 20),
+                  title: const Text('Capabilities', style: TextStyle(color: AppTheme.textDark, fontSize: 14)),
                   onTap: () {
                     Navigator.pop(ctx);
                     _scrollTo(_capabilitiesKey);
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.account_tree_outlined, color: Color(0xFF60A5FA), size: 20),
-                  title: const Text('How It Works', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  leading: const Icon(Icons.account_tree_outlined, color: AppTheme.primaryBlue, size: 20),
+                  title: const Text('How It Works', style: TextStyle(color: AppTheme.textDark, fontSize: 14)),
                   onTap: () {
                     Navigator.pop(ctx);
                     _scrollTo(_howItWorksKey);
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.preview_outlined, color: Color(0xFF60A5FA), size: 20),
-                  title: const Text('Fleet Preview', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  leading: const Icon(Icons.preview_outlined, color: AppTheme.primaryBlue, size: 20),
+                  title: const Text('Fleet Preview', style: TextStyle(color: AppTheme.textDark, fontSize: 14)),
                   onTap: () {
                     Navigator.pop(ctx);
                     _scrollTo(_previewKey);
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.cloud_done_outlined, color: Color(0xFF10B981), size: 20),
-                  title: const Text('System Status', style: TextStyle(color: Colors.white, fontSize: 14)),
+                  leading: const Icon(Icons.cloud_done_outlined, color: AppTheme.statusActiveText, size: 20),
+                  title: const Text('System Status', style: TextStyle(color: AppTheme.textDark, fontSize: 14)),
                   onTap: () {
                     Navigator.pop(ctx);
                     _scrollTo(_statusKey);
@@ -185,9 +163,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     icon: const Icon(Icons.dashboard_rounded, size: 18),
                     label: const Text('Open Fleet Registry'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
+                      backgroundColor: AppTheme.primaryBlue,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -199,8 +177,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     icon: const Icon(Icons.logout, size: 18),
                     label: const Text('Sign out'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFE2E8F0),
-                      side: const BorderSide(color: Color(0xFF334155)),
+                      foregroundColor: AppTheme.textDark,
+                      side: const BorderSide(color: AppTheme.borderNeutral),
                     ),
                   ),
                 ] else ...[
@@ -212,9 +190,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
                     label: const Text('Create Account'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF2563EB),
+                      backgroundColor: AppTheme.primaryBlue,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -226,8 +204,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     icon: const Icon(Icons.login_rounded, size: 18),
                     label: const Text('Sign in'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFFE2E8F0),
-                      side: const BorderSide(color: Color(0xFF334155)),
+                      foregroundColor: AppTheme.textDark,
+                      side: const BorderSide(color: AppTheme.borderNeutral),
                     ),
                   ),
                 ],
@@ -242,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: AppTheme.canvasLight,
       body: ValueListenableBuilder(
         valueListenable: AuthService.instance.sessionNotifier,
         builder: (context, session, _) {
@@ -251,12 +229,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           return CustomScrollView(
             controller: _scrollController,
             slivers: [
-              // Sticky Navigation Header
+              // Sticky Navigation Header (Deep Navy)
               SliverToBoxAdapter(
                 child: _buildNavigationBar(context, isAuthenticated),
               ),
 
-              // Hero Section
+              // Hero Section (Light Canvas)
               SliverToBoxAdapter(
                 child: _buildHeroSection(context, isAuthenticated),
               ),
@@ -285,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: _buildSystemStatusSection(context),
               ),
 
-              // High-Impact Closing CTA
+              // Closing CTA Section
               SliverToBoxAdapter(
                 child: _buildClosingCtaSection(context, isAuthenticated),
               ),
@@ -311,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         vertical: AppTheme.space12,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFF0B1329),
+        color: AppTheme.brandNavy,
         border: Border(
           bottom: BorderSide(color: Color(0xFF1E293B), width: 1),
         ),
@@ -328,30 +306,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   if (_scrollController.hasClients) {
                     _scrollController.animateTo(
                       0,
-                      duration: const Duration(milliseconds: 400),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   }
                 },
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: 34,
+                      height: 34,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF2563EB), Color(0xFF1D4ED8)],
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF2563EB).withValues(alpha: 0.35),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
+                        color: AppTheme.primaryBlue,
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Icon(Icons.directions_car_rounded, color: Colors.white, size: 20),
                     ),
@@ -365,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
-                            letterSpacing: 1.2,
+                            letterSpacing: 1.1,
                             color: Colors.white,
                           ),
                         ),
@@ -405,7 +374,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             icon: const Icon(Icons.dashboard_rounded, size: 16),
                             label: const Text('Open App'),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2563EB),
+                              backgroundColor: AppTheme.primaryBlue,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -419,9 +388,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             icon: const Icon(Icons.logout, size: 14),
                             label: const Text('Sign out', style: TextStyle(fontSize: 12)),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFFE2E8F0),
+                              foregroundColor: const Color(0xFFCBD5E1),
                               side: const BorderSide(color: Color(0xFF334155)),
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                             ),
                           ),
@@ -442,13 +411,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               Navigator.of(context).pushNamed(AppRouter.registerRoute);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2563EB),
+                              backgroundColor: AppTheme.primaryBlue,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                              elevation: 2,
+                              elevation: 0,
                             ),
-                            child: const Text('Register Account', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                            child: const Text('Register Account', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
                           ),
                         ],
                       ],
@@ -470,11 +439,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _navTextButton(String title, VoidCallback onTap) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
-          foregroundColor: const Color(0xFF94A3B8),
+          foregroundColor: const Color(0xFFCBD5E1),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         ),
         child: Text(
@@ -490,9 +459,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final isDesktop = width >= 1024;
 
     return Container(
+      color: AppTheme.canvasLight,
       padding: EdgeInsets.symmetric(
         horizontal: isDesktop ? AppTheme.space32 : AppTheme.space20,
-        vertical: isDesktop ? 64 : 40,
+        vertical: isDesktop ? 56 : 36,
       ),
       alignment: Alignment.center,
       child: ConstrainedBox(
@@ -521,7 +491,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 : Column(
                     children: [
                       _buildHeroLeftContent(context, isAuthenticated),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 36),
                       _buildHeroMockPreviewCard(),
                     ],
                   ),
@@ -538,40 +508,24 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: isSmall ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        // Live Pulse Pill Tag
+        // Status Pill Tag
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E293B),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.4)),
+            color: AppTheme.surfaceWhite,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppTheme.borderNeutral),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AnimatedBuilder(
-                animation: _pulseAnimation,
-                builder: (context, child) {
-                  return Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Color.lerp(
-                        const Color(0xFF10B981).withValues(alpha: 0.4),
-                        const Color(0xFF10B981),
-                        _pulseAnimation.value,
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF10B981).withValues(alpha: 0.6 * _pulseAnimation.value),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                        ),
-                      ],
-                    ),
-                  );
-                },
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: AppTheme.statusActiveText,
+                  shape: BoxShape.circle,
+                ),
               ),
               const SizedBox(width: 8),
               Flexible(
@@ -581,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF93C5FD),
+                    color: AppTheme.textDark,
                   ),
                 ),
               ),
@@ -595,31 +549,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           'Centralized Fleet Operations &\nVehicle Management System',
           textAlign: isSmall ? TextAlign.center : TextAlign.left,
           style: TextStyle(
-            fontSize: isSmall ? 28 : 40,
+            fontSize: isSmall ? 28 : 38,
             fontWeight: FontWeight.w800,
-            color: Colors.white,
-            letterSpacing: -0.8,
-            height: 1.15,
+            color: AppTheme.textDark,
+            letterSpacing: -0.7,
+            height: 1.18,
           ),
         ),
         const SizedBox(height: AppTheme.space16),
 
         // Supporting description
         Text(
-          'Track vehicle records across Stark Group subsidiaries. Enforces case-insensitive duplicate validation, provides complete lifecycle CRUD, and secures corporate assets with stateless JWT authentication.',
+          'Track vehicle records across Stark Group subsidiaries. Enforces duplicate vehicle number validation, provides complete lifecycle CRUD, and protects operational data with verified account authentication.',
           textAlign: isSmall ? TextAlign.center : TextAlign.left,
           style: const TextStyle(
             fontSize: 15,
             height: 1.55,
-            color: Color(0xFF94A3B8),
+            color: AppTheme.textMuted,
           ),
         ),
-        const SizedBox(height: 32),
+        const SizedBox(height: 28),
 
         // CTAs
         Wrap(
-          spacing: 14,
-          runSpacing: 12,
+          spacing: 12,
+          runSpacing: 10,
           alignment: isSmall ? WrapAlignment.center : WrapAlignment.start,
           children: [
             if (isAuthenticated)
@@ -628,13 +582,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Navigator.of(context).pushNamed(AppRouter.vehiclesRoute);
                 },
                 icon: const Icon(Icons.arrow_forward_rounded, size: 18),
-                label: const Text('Access Fleet Registry', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                label: const Text('Access Fleet Registry', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
+                  backgroundColor: AppTheme.primaryBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 4,
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  elevation: 0,
                 ),
               )
             else ...[
@@ -643,13 +597,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Navigator.of(context).pushNamed(AppRouter.registerRoute);
                 },
                 icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-                label: const Text('Create Account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                label: const Text('Create Account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
+                  backgroundColor: AppTheme.primaryBlue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 4,
+                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  elevation: 0,
                 ),
               ),
               OutlinedButton.icon(
@@ -657,28 +611,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Navigator.of(context).pushNamed(AppRouter.loginRoute);
                 },
                 icon: const Icon(Icons.login_rounded, size: 18),
-                label: const Text('Sign in to Account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                label: const Text('Sign in to Account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: const BorderSide(color: Color(0xFF475569), width: 1.5),
-                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  foregroundColor: AppTheme.textDark,
+                  side: const BorderSide(color: AppTheme.borderNeutral, width: 1.2),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                 ),
               ),
             ],
           ],
         ),
-        const SizedBox(height: 28),
+        const SizedBox(height: 24),
 
-        // Architectural Specification Chips
+        // Functional Capability Chips
         Wrap(
           spacing: 8,
           runSpacing: 8,
           alignment: isSmall ? WrapAlignment.center : WrapAlignment.start,
           children: const [
-            _HeroPill(label: 'Spring Boot 3 REST API'),
-            _HeroPill(label: 'PostgreSQL 16 Persistence'),
-            _HeroPill(label: 'Stateless HMAC-SHA256 JWT'),
+            _HeroPill(label: 'Real-Time Registry'),
+            _HeroPill(label: 'Duplicate Validation'),
+            _HeroPill(label: 'Verified Authentication'),
           ],
         ),
       ],
@@ -690,14 +644,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildHeroMockPreviewCard() {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155)),
-        boxShadow: [
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.borderNeutral),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
+            color: Color(0x0A000000),
+            blurRadius: 16,
+            offset: Offset(0, 4),
           ),
         ],
       ),
@@ -747,7 +701,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF94A3B8),
+                          color: AppTheme.textDark,
                         ),
                       ),
                     ),
@@ -758,12 +712,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A),
+                  color: AppTheme.canvasLight,
                   borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: AppTheme.borderNeutral),
                 ),
                 child: const Text(
                   'Fictional Mock Data',
-                  style: TextStyle(fontSize: 10, color: Color(0xFF64748B)),
+                  style: TextStyle(fontSize: 10, color: AppTheme.textMuted),
                 ),
               ),
             ],
@@ -773,11 +728,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           // KPI Mini Cards Row
           Row(
             children: [
-              _buildMockKpiChip('Total Fleet', '24', const Color(0xFF3B82F6)),
+              _buildMockKpiChip('Total Fleet', '24', AppTheme.primaryBlue),
               const SizedBox(width: 8),
-              _buildMockKpiChip('Active', '21', const Color(0xFF10B981)),
+              _buildMockKpiChip('Active', '21', AppTheme.statusActiveText),
               const SizedBox(width: 8),
-              _buildMockKpiChip('Maintenance', '3', const Color(0xFFF59E0B)),
+              _buildMockKpiChip('Maintenance', '3', AppTheme.statusMaintenanceText),
             ],
           ),
           const SizedBox(height: AppTheme.space16),
@@ -788,7 +743,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             model: 'Audi R8 V10 Plus',
             company: 'Stark Industries',
             status: 'ACTIVE',
-            statusColor: const Color(0xFF10B981),
+            statusBg: AppTheme.statusActiveBg,
+            statusColor: AppTheme.statusActiveText,
+            statusBorder: AppTheme.statusActiveBorder,
           ),
           const SizedBox(height: 8),
           _buildMockVehicleRow(
@@ -796,7 +753,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             model: 'Tesla Model S Plaid',
             company: 'Stark Logistics',
             status: 'ACTIVE',
-            statusColor: const Color(0xFF10B981),
+            statusBg: AppTheme.statusActiveBg,
+            statusColor: AppTheme.statusActiveText,
+            statusBorder: AppTheme.statusActiveBorder,
           ),
           const SizedBox(height: 8),
           _buildMockVehicleRow(
@@ -804,7 +763,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             model: 'Oshkosh M-ATV',
             company: 'Stark Defense',
             status: 'MAINTENANCE',
-            statusColor: const Color(0xFFF59E0B),
+            statusBg: AppTheme.statusMaintenanceBg,
+            statusColor: AppTheme.statusMaintenanceText,
+            statusBorder: AppTheme.statusMaintenanceBorder,
           ),
         ],
       ),
@@ -816,14 +777,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFF1E293B)),
+          color: AppTheme.canvasLight,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: AppTheme.borderNeutral),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+            Text(label, style: const TextStyle(fontSize: 10, color: AppTheme.textMuted)),
             const SizedBox(height: 2),
             Text(
               value,
@@ -840,14 +801,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     required String model,
     required String company,
     required String status,
+    required Color statusBg,
     required Color statusColor,
+    required Color statusBorder,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFF334155).withValues(alpha: 0.6)),
+        color: AppTheme.canvasLight,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppTheme.borderNeutral),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -858,16 +821,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF1E293B),
+                    color: AppTheme.surfaceWhite,
                     borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: AppTheme.borderNeutral),
                   ),
                   child: Text(
                     vin,
                     style: const TextStyle(
                       fontFamily: 'monospace',
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF93C5FD),
+                      color: AppTheme.primaryBlue,
                     ),
                   ),
                 ),
@@ -880,12 +844,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       Text(
                         model,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textDark),
                       ),
                       Text(
                         company,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8)),
+                        style: const TextStyle(fontSize: 10, color: AppTheme.textMuted),
                       ),
                     ],
                   ),
@@ -897,9 +861,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.15),
+              color: statusBg,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: statusColor.withValues(alpha: 0.4)),
+              border: Border.all(color: statusBorder),
             ),
             child: Text(
               status,
@@ -920,36 +884,37 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _Capability(
         icon: Icons.directions_car_filled_outlined,
         title: 'Central Vehicle Registry',
-        description: 'Normalized tracking of vehicle registration numbers, subsidiary companies, body types, manufacturer brands, and models in PostgreSQL.',
+        description: 'Normalized tracking of vehicle numbers, subsidiary divisions, body types, manufacturer brands, and models in a central database.',
       ),
       _Capability(
         icon: Icons.sync_alt_rounded,
         title: 'Full Lifecycle CRUD',
-        description: 'Register, inspect, update, and decommission vehicles with confirmation guards, cancel safety, and live SQL database persistence.',
+        description: 'Register, inspect, update, and decommission fleet vehicles with confirmation dialogs, cancel safety, and live cloud persistence.',
       ),
       _Capability(
         icon: Icons.security_outlined,
         title: 'Duplicate Number Validation',
-        description: 'Case-insensitive, whitespace-trimmed duplicate checking. Rejects duplicates with HTTP 409 Conflict while safely preserving form inputs.',
+        description: 'Case-insensitive duplicate checking. Rejects duplicates with inline alerts while safely preserving entered form inputs.',
       ),
       _Capability(
         icon: Icons.visibility_outlined,
         title: 'Operational Status Visibility',
-        description: 'Real-time classification across ACTIVE, INACTIVE, and MAINTENANCE states with color-coded badges and KPI overview metrics.',
+        description: 'Clear classification across ACTIVE, INACTIVE, and MAINTENANCE states with color-coded badges and KPI overview metrics.',
       ),
       _Capability(
         icon: Icons.search_rounded,
         title: 'Instant Multi-Filter Search',
-        description: 'Fast client-side query matching across vehicle numbers, models, and subsidiary divisions with live total count recalculation.',
+        description: 'Responsive client-side query matching across vehicle numbers, models, and subsidiaries with live total count recalculation.',
       ),
       _Capability(
         icon: Icons.lock_outline_rounded,
-        title: 'Stateless JWT Authentication',
-        description: 'Cryptographic HMAC-SHA256 Bearer tokens. All vehicle endpoints require valid authentication; unauthenticated visits redirect to Login.',
+        title: 'Secure Account Access',
+        description: 'Verified session authentication. Internal vehicle management routes require sign-in; unauthenticated requests redirect to Login.',
       ),
     ];
 
     return Container(
+      color: AppTheme.canvasLight,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 48),
       alignment: Alignment.center,
       child: ConstrainedBox(
@@ -957,57 +922,57 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           children: [
             const Text(
-              'ENGINEERED SYSTEM CAPABILITIES',
+              'CORE CAPABILITIES',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
-                color: Color(0xFF60A5FA),
+                color: AppTheme.primaryBlue,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Enterprise-Grade Fleet Management',
+              'Comprehensive Fleet Oversight',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppTheme.textDark,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Every capability listed below is backed by verified code in the frontend and backend repositories.',
+              'Reliable fleet operations powered by verified frontend and backend services.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+              style: TextStyle(fontSize: 14, color: AppTheme.textMuted),
             ),
-            const SizedBox(height: 36),
+            const SizedBox(height: 32),
             LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth > 720;
                 return Wrap(
-                  spacing: 20,
-                  runSpacing: 20,
+                  spacing: 16,
+                  runSpacing: 16,
                   children: capabilities.map((c) {
                     return SizedBox(
-                      width: isWide ? (constraints.maxWidth - 20) / 2 : constraints.maxWidth,
+                      width: isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth,
                       child: Container(
-                        padding: const EdgeInsets.all(AppTheme.space24),
+                        padding: const EdgeInsets.all(AppTheme.space20),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFF334155)),
+                          color: AppTheme.surfaceWhite,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.borderNeutral),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF2563EB).withValues(alpha: 0.15),
-                                borderRadius: BorderRadius.circular(8),
+                                color: AppTheme.primaryBlueSubtle,
+                                borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Icon(c.icon, color: const Color(0xFF60A5FA), size: 24),
+                              child: Icon(c.icon, color: AppTheme.primaryBlue, size: 22),
                             ),
                             const SizedBox(width: AppTheme.space16),
                             Expanded(
@@ -1017,17 +982,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   Text(
                                     c.title,
                                     style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppTheme.textDark,
                                     ),
                                   ),
-                                  const SizedBox(height: 6),
+                                  const SizedBox(height: 4),
                                   Text(
                                     c.description,
                                     style: const TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF94A3B8),
+                                      color: AppTheme.textMuted,
                                       height: 1.45,
                                     ),
                                   ),
@@ -1053,23 +1018,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _WorkflowStep(
         number: '01',
         title: 'Create Your Account',
-        description: 'Register with your work email and password. Credentials undergo algorithm-aware validation and secure BCrypt hashing in PostgreSQL.',
+        description: 'Register with your work email and password. Credentials undergo secure validation and database hashing.',
       ),
       _WorkflowStep(
         number: '02',
-        title: 'Authenticate Securely',
-        description: 'Sign in to receive an HMAC-SHA256 signed Bearer JWT token held safely in memory with automatic 401 handling.',
+        title: 'Sign In Securely',
+        description: 'Authenticate with your verified credentials to establish a secure, protected session.',
       ),
       _WorkflowStep(
         number: '03',
         title: 'Manage Fleet Assets',
-        description: 'Access the Fleet Registry to register, inspect, search, update, and decommission subsidiary vehicles with live persistence.',
+        description: 'Access the Fleet Registry to register, inspect, search, update, and manage subsidiary vehicles with live persistence.',
       ),
     ];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 48),
-      color: const Color(0xFF0B1329),
+      decoration: const BoxDecoration(
+        color: AppTheme.surfaceWhite,
+        border: Border.symmetric(
+          horizontal: BorderSide(color: AppTheme.borderNeutral, width: 1),
+        ),
+      ),
       alignment: Alignment.center,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 1100),
@@ -1081,20 +1051,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
-                color: Color(0xFF60A5FA),
+                color: AppTheme.primaryBlue,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Simple, Secure Three-Step Workflow',
+              'Simple, Structured Three-Step Workflow',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppTheme.textDark,
               ),
             ),
-            const SizedBox(height: 36),
+            const SizedBox(height: 32),
             LayoutBuilder(
               builder: (context, constraints) {
                 final isWide = constraints.maxWidth > 800;
@@ -1120,11 +1090,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildStepCard(_WorkflowStep s) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
-      padding: const EdgeInsets.all(AppTheme.space24),
+      padding: const EdgeInsets.all(AppTheme.space20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF334155)),
+        color: AppTheme.canvasLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.borderNeutral),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1132,26 +1102,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Text(
             s.number,
             style: const TextStyle(
-              fontSize: 28,
+              fontSize: 26,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF3B82F6),
+              color: AppTheme.primaryBlue,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             s.title,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: AppTheme.textDark,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             s.description,
             style: const TextStyle(
               fontSize: 13,
-              color: Color(0xFF94A3B8),
+              color: AppTheme.textMuted,
               height: 1.45,
             ),
           ),
@@ -1162,6 +1132,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildProductPreviewSection(BuildContext context) {
     return Container(
+      color: AppTheme.canvasLight,
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 48),
       alignment: Alignment.center,
       child: ConstrainedBox(
@@ -1174,7 +1145,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
-                color: Color(0xFF60A5FA),
+                color: AppTheme.primaryBlue,
               ),
             ),
             const SizedBox(height: 8),
@@ -1184,14 +1155,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppTheme.textDark,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Preview the UI layouts available to authenticated personnel. All data below is illustrative.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+              style: TextStyle(fontSize: 14, color: AppTheme.textMuted),
             ),
             const SizedBox(height: 24),
 
@@ -1205,10 +1176,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   onSelected: (selected) {
                     if (selected) setState(() => _previewTabIndex = 0);
                   },
-                  selectedColor: const Color(0xFF2563EB),
+                  selectedColor: AppTheme.primaryBlue,
+                  backgroundColor: AppTheme.surfaceWhite,
+                  side: const BorderSide(color: AppTheme.borderNeutral),
                   labelStyle: TextStyle(
-                    color: _previewTabIndex == 0 ? Colors.white : const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.bold,
+                    color: _previewTabIndex == 0 ? Colors.white : AppTheme.textDark,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1218,24 +1191,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   onSelected: (selected) {
                     if (selected) setState(() => _previewTabIndex = 1);
                   },
-                  selectedColor: const Color(0xFF2563EB),
+                  selectedColor: AppTheme.primaryBlue,
+                  backgroundColor: AppTheme.surfaceWhite,
+                  side: const BorderSide(color: AppTheme.borderNeutral),
                   labelStyle: TextStyle(
-                    color: _previewTabIndex == 1 ? Colors.white : const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.bold,
+                    color: _previewTabIndex == 1 ? Colors.white : AppTheme.textDark,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
-            // Preview Card Container
+            // Preview Card Container (Pure White)
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: AppTheme.surfaceWhite,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppTheme.borderNeutral),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x08000000),
+                    blurRadius: 12,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.all(AppTheme.space24),
+              padding: const EdgeInsets.all(AppTheme.space20),
               child: _previewTabIndex == 0
                   ? _buildTablePreviewContent()
                   : _buildFormPreviewContent(),
@@ -1255,34 +1237,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           children: [
             const Text(
               'Fleet Registry (12 Vehicles)',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textDark),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F172A),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: const Color(0xFF334155)),
+                color: AppTheme.canvasLight,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: AppTheme.borderNeutral),
               ),
               child: Row(
                 children: const [
-                  Icon(Icons.search, size: 14, color: Color(0xFF94A3B8)),
+                  Icon(Icons.search, size: 14, color: AppTheme.textMuted),
                   SizedBox(width: 6),
-                  Text('Filter by company / number...', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                  Text('Filter by company / number...', style: TextStyle(fontSize: 12, color: AppTheme.textMuted)),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        const Divider(color: Color(0xFF334155)),
-        const SizedBox(height: 8),
+        const SizedBox(height: 14),
+        const Divider(color: AppTheme.borderNeutral),
+        const SizedBox(height: 6),
         _buildMockVehicleRow(
           vin: 'STK-0001',
           model: 'Audi R8 V10 Coupe',
           company: 'Stark Industries',
           status: 'ACTIVE',
-          statusColor: const Color(0xFF10B981),
+          statusBg: AppTheme.statusActiveBg,
+          statusColor: AppTheme.statusActiveText,
+          statusBorder: AppTheme.statusActiveBorder,
         ),
         const SizedBox(height: 8),
         _buildMockVehicleRow(
@@ -1290,7 +1274,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           model: 'Mercedes-Benz Sprinter Cargo',
           company: 'Stark Logistics',
           status: 'ACTIVE',
-          statusColor: const Color(0xFF10B981),
+          statusBg: AppTheme.statusActiveBg,
+          statusColor: AppTheme.statusActiveText,
+          statusBorder: AppTheme.statusActiveBorder,
         ),
         const SizedBox(height: 8),
         _buildMockVehicleRow(
@@ -1298,7 +1284,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           model: 'Ford F-150 Lightning EV',
           company: 'Stark Energy',
           status: 'MAINTENANCE',
-          statusColor: const Color(0xFFF59E0B),
+          statusBg: AppTheme.statusMaintenanceBg,
+          statusColor: AppTheme.statusMaintenanceText,
+          statusBorder: AppTheme.statusMaintenanceBorder,
         ),
       ],
     );
@@ -1310,14 +1298,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       children: [
         const Text(
           'Register New Vehicle Form Layout',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textDark),
         ),
         const SizedBox(height: 4),
         const Text(
           'Fields: Vehicle Number (Unique), Subsidiary Company, Vehicle Type, Manufacturer Brand, Model, and Status.',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 12, color: AppTheme.textMuted),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 14),
         Row(
           children: [
             Expanded(child: _mockFormInput('Vehicle Number', 'e.g. STK-0042')),
@@ -1341,18 +1329,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF94A3B8))),
+        Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.textDark)),
         const SizedBox(height: 4),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(color: const Color(0xFF334155)),
+            color: AppTheme.canvasLight,
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: AppTheme.borderNeutral),
           ),
           child: Text(
             placeholder,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+            style: const TextStyle(fontSize: 12, color: AppTheme.textDisabled),
           ),
         ),
       ],
@@ -1361,16 +1349,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildSystemStatusSection(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 32),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 24),
       alignment: Alignment.center,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 900),
         child: Container(
-          padding: const EdgeInsets.all(AppTheme.space20),
+          padding: const EdgeInsets.all(AppTheme.space16),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F172A),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF1E293B)),
+            color: AppTheme.surfaceWhite,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppTheme.borderNeutral),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1379,26 +1367,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Row(
                   children: [
                     Container(
-                      width: 10,
-                      height: 10,
+                      width: 8,
+                      height: 8,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF10B981),
+                        color: AppTheme.statusActiveText,
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            'Live Production Environment',
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                            'Operational Fleet System — Verified Live',
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.textDark),
                           ),
                           SizedBox(height: 2),
                           Text(
-                            'Frontend: Netlify Edge  •  Backend: Render Managed Cloud (PostgreSQL 16)',
-                            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                            'Frontend: Netlify Production Edge  •  Backend: Cloud API & PostgreSQL',
+                            style: TextStyle(fontSize: 11, color: AppTheme.textMuted),
                           ),
                         ],
                       ),
@@ -1410,8 +1398,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 onPressed: () {
                   Navigator.of(context).pushNamed(AppRouter.loginRoute);
                 },
-                icon: const Icon(Icons.arrow_forward_rounded, size: 14, color: Color(0xFF60A5FA)),
-                label: const Text('Sign in →', style: TextStyle(color: Color(0xFF60A5FA), fontSize: 13)),
+                icon: const Icon(Icons.arrow_forward_rounded, size: 14, color: AppTheme.primaryBlue),
+                label: const Text('Sign in →', style: TextStyle(color: AppTheme.primaryBlue, fontSize: 13, fontWeight: FontWeight.w600)),
               ),
             ],
           ),
@@ -1422,20 +1410,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildClosingCtaSection(BuildContext context, bool isAuthenticated) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 32),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: 24),
       alignment: Alignment.center,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 900),
         child: Container(
-          padding: const EdgeInsets.all(36),
+          padding: const EdgeInsets.all(32),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF1E3A8A), Color(0xFF1E293B)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF3B82F6).withValues(alpha: 0.4)),
+            color: AppTheme.brandNavy,
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             children: [
@@ -1443,21 +1426,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 'Ready to Manage Stark Group Fleet Operations?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               const Text(
                 'Create a corporate account today or authenticate with existing credentials to access the verified fleet registry.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Color(0xFF93C5FD)),
+                style: TextStyle(fontSize: 14, color: Color(0xFFCBD5E1)),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Wrap(
-                spacing: 16,
-                runSpacing: 12,
+                spacing: 12,
+                runSpacing: 10,
                 alignment: WrapAlignment.center,
                 children: [
                   if (isAuthenticated)
@@ -1466,12 +1449,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Navigator.of(context).pushNamed(AppRouter.vehiclesRoute);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: AppTheme.primaryBlue,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        elevation: 0,
                       ),
-                      child: const Text('Open Fleet Registry', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text('Open Fleet Registry', style: TextStyle(fontWeight: FontWeight.w600)),
                     )
                   else ...[
                     ElevatedButton(
@@ -1479,12 +1463,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Navigator.of(context).pushNamed(AppRouter.registerRoute);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2563EB),
+                        backgroundColor: AppTheme.primaryBlue,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        elevation: 0,
                       ),
-                      child: const Text('Create Account', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text('Create Account', style: TextStyle(fontWeight: FontWeight.w600)),
                     ),
                     OutlinedButton(
                       onPressed: () {
@@ -1492,11 +1477,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       },
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
-                        side: const BorderSide(color: Color(0xFF93C5FD)),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        side: const BorderSide(color: Color(0xFF475569)),
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                       ),
-                      child: const Text('Sign In', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text('Sign In', style: TextStyle(fontWeight: FontWeight.w600)),
                     ),
                   ],
                 ],
@@ -1512,7 +1497,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.space32, vertical: AppTheme.space24),
       decoration: const BoxDecoration(
-        color: Color(0xFF0B1329),
+        color: AppTheme.brandNavy,
         border: Border(
           top: BorderSide(color: Color(0xFF1E293B), width: 1),
         ),
@@ -1528,15 +1513,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
               ),
               Text(
-                ' • Flutter Web • Spring Boot 3 • PostgreSQL 16',
-                style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                '  •  Central Fleet Management System',
+                style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
               ),
             ],
           ),
           const SizedBox(height: 8),
           const Text(
-            '© 2026 Stark Group Vehicle Management System. All rights reserved.',
-            style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+            'Production Deployment: Flutter Web & Spring Boot REST API',
+            style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
           ),
         ],
       ),
@@ -1552,15 +1537,29 @@ class _HeroPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155)),
+        color: AppTheme.surfaceWhite,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: AppTheme.borderNeutral),
       ),
-      child: Text(
-        label,
-        style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8), fontWeight: FontWeight.w500),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check_circle_outline, size: 13, color: AppTheme.primaryBlue),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: AppTheme.textDark,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

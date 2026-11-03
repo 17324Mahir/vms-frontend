@@ -107,7 +107,7 @@ class AppShell extends StatelessWidget {
   Widget _buildDemoChip() {
     return Tooltip(
       message:
-          'Authenticated with signed JWT bearer token. Persistent fleet data synchronized with PostgreSQL.',
+          'Authenticated session. Persistent fleet data synchronized with backend database.',
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
@@ -121,7 +121,7 @@ class AppShell extends StatelessWidget {
             Icon(Icons.verified_user_outlined, size: 12, color: Color(0xFF15803D)),
             SizedBox(width: 4),
             Text(
-              'JWT Protected',
+              'Secure Session',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -246,7 +246,7 @@ class AppShell extends StatelessWidget {
   }
 
   Widget _buildSidebarFooter(BuildContext context) {
-    final email = AuthService.instance.currentEmail ?? 'admin@starkgroup.test';
+    final email = AuthService.instance.currentEmail ?? 'operator@starkgroup.com';
     final initials = _getUserInitials(email);
     final displayName = _getUserDisplayName(email);
 
@@ -337,7 +337,7 @@ class AppShell extends StatelessWidget {
   }
 
   Widget _buildUserAccountMenu(BuildContext context) {
-    final email = AuthService.instance.currentEmail ?? 'admin@starkgroup.test';
+    final email = AuthService.instance.currentEmail ?? 'operator@starkgroup.com';
     final initials = _getUserInitials(email);
     final displayName = _getUserDisplayName(email);
 
