@@ -230,6 +230,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         'Password *',
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFFE2E8F0)),
                       ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Must be between 6 and 72 characters.',
+                        style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                      ),
                       const SizedBox(height: 6),
                       TextFormField(
                         controller: _passwordController,
@@ -246,8 +251,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         validator: (value) {
-                          if (value == null || value.trim().length < 6) {
+                          final trimmed = value?.trim() ?? '';
+                          if (trimmed.length < 6) {
                             return 'Password must be at least 6 characters.';
+                          }
+                          if (trimmed.length > 72) {
+                            return 'Password cannot exceed 72 characters.';
                           }
                           return null;
                         },

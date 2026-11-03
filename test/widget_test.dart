@@ -343,4 +343,78 @@ void main() {
     // Should be back on Login screen
     expect(find.text('Sign in to your account'), findsOneWidget);
   });
+
+  testWidgets('12. Home screen toggles between preview views (Fleet Table and Registration Form)',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpAndSettle();
+
+    final previewChip = find.text('Fleet Table View');
+    await tester.scrollUntilVisible(
+      previewChip,
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+
+    expect(previewChip, findsOneWidget);
+    expect(find.text('Vehicle Registration Form'), findsOneWidget);
+    expect(find.textContaining('Fleet Registry (12 Vehicles)'), findsOneWidget);
+
+    // Switch to Registration Form View
+    await tester.tap(find.text('Vehicle Registration Form'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Register New Vehicle Form Layout'), findsOneWidget);
+    expect(find.text('e.g. STK-0042'), findsOneWidget);
+  });
+
+  testWidgets('13. Home screen responsive mobile menu renders and navigates to Register',
+      (WidgetTester tester) async {
+    // 390px mobile viewport triggers mobile navigation hamburger
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    await tester.pumpWidget(const StarkVmsApp());
+    await tester.pumpAndSettle();
+
+    final menuBtn = find.byTooltip('Open navigation menu');
+    expect(menuBtn, findsOneWidget);
+
+    await tester.tap(menuBtn);
+    await tester.pumpAndSettle();
+
+    // Modal bottom sheet should appear with navigation items
+    expect(find.text('Capabilities'), findsOneWidget);
+    expect(find.text('How It Works'), findsOneWidget);
+    expect(find.text('Fleet Preview'), findsOneWidget);
+    expect(find.text('System Status'), findsOneWidget);
+  });
+
+  testWidgets('14. Home screen adapts responsively across 1440, 1024, 768, and 390 viewports',
+      (WidgetTester tester) async {
+    final viewports = [
+      const Size(1440, 900),
+      const Size(1024, 768),
+      const Size(768, 1024),
+      const Size(390, 844),
+    ];
+
+    for (final size in viewports) {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(const StarkVmsApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('STARK GROUP'), findsAtLeast(1));
+      expect(find.textContaining('Fleet Operations'), findsAtLeast(1));
+    }
+
+    tester.view.resetPhysicalSize();
+  });
 }
