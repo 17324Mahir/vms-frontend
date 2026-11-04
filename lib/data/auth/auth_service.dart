@@ -72,6 +72,18 @@ class AuthService {
 
   String? get currentEmail => currentSession?.user.email;
 
+  Timer? _keepAliveTimer;
+
+  /// Starts a periodic background heartbeat (every 5 minutes) to keep the backend warm
+  /// while the web app is open in a browser tab.
+  void startKeepAlive() {
+    _keepAliveTimer?.cancel();
+    unawaited(warmUpBackend());
+    _keepAliveTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+      unawaited(warmUpBackend());
+    });
+  }
+
   /// Preemptively pings the cloud backend to wake it up from idle sleep.
   Future<void> warmUpBackend() async {
     try {
