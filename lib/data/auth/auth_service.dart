@@ -72,12 +72,25 @@ class AuthService {
 
   String? get currentEmail => currentSession?.user.email;
 
+  /// Preemptively pings the cloud backend to wake it up from idle sleep.
+  Future<void> warmUpBackend() async {
+    try {
+      final client = http.Client();
+      await client
+          .get(ApiConfig.baseUri.replace(path: '/actuator/health'))
+          .timeout(const Duration(seconds: 45));
+      client.close();
+    } catch (_) {
+      // Best-effort warm up; errors are ignored
+    }
+  }
+
   /// Authenticates against `POST /api/auth/login`.
   Future<AuthSession> login(
     String email,
     String password, {
     http.Client? client,
-    Duration timeout = const Duration(seconds: 10),
+    Duration timeout = const Duration(seconds: 45),
   }) async {
     final httpClient = client ?? http.Client();
     final isCustomClient = client != null;
@@ -128,7 +141,7 @@ class AuthService {
       throw _parseLoginError(response);
     } on TimeoutException catch (e) {
       throw NetworkException(
-        'Connection timed out while attempting to sign in. Please verify the backend is running.',
+        'The server is taking longer than usual to respond (cloud service may be waking up from idle). Please wait a moment and try again.',
         e,
       );
     } on SocketException catch (e) {
@@ -154,7 +167,7 @@ class AuthService {
     String email,
     String password, {
     http.Client? client,
-    Duration timeout = const Duration(seconds: 15),
+    Duration timeout = const Duration(seconds: 45),
   }) async {
     final httpClient = client ?? http.Client();
     final isCustomClient = client != null;
@@ -205,7 +218,7 @@ class AuthService {
       throw _parseRegisterError(response);
     } on TimeoutException catch (e) {
       throw NetworkException(
-        'Connection timed out while attempting to register. Please verify the backend is running.',
+        'The server is taking longer than usual to respond (cloud service may be waking up from idle). Please wait a moment and try again.',
         e,
       );
     } on SocketException catch (e) {

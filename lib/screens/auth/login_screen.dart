@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../core/errors/api_exception.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/auth/auth_service.dart';
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
+      TextInput.finishAutofillContext();
       _passwordController.clear();
       setState(() => _isSubmitting = false);
 
@@ -107,9 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ? AppTheme.space20
                         : AppTheme.space32,
                   ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
+                  child: AutofillGroup(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -145,6 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
+                ),
                 ),
               ),
             ),
@@ -297,6 +301,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TextFormField(
           controller: _emailController,
           enabled: !_isSubmitting,
+          autofillHints: const [AutofillHints.email, AutofillHints.username],
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
           onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
@@ -337,6 +342,7 @@ class _LoginScreenState extends State<LoginScreen> {
           focusNode: _passwordFocusNode,
           enabled: !_isSubmitting,
           obscureText: _obscurePassword,
+          autofillHints: const [AutofillHints.password],
           textInputAction: TextInputAction.done,
           onFieldSubmitted: (_) => _handleSubmit(),
           decoration: InputDecoration(

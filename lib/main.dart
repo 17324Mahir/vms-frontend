@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
+import 'data/auth/auth_service.dart';
 import 'router/app_router.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Fire background non-blocking ping to wake up cloud backend from idle sleep
+  unawaited(AuthService.instance.warmUpBackend());
   runApp(const StarkVmsApp());
 }
 
