@@ -133,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: AppTheme.space4),
                           const Text(
-                            'Register a corporate account to access the Fleet Registry',
+                            'Enter your details below to create an account.',
                             style: TextStyle(fontSize: 13, color: AppTheme.textMuted),
                           ),
                           const SizedBox(height: AppTheme.space20),
@@ -214,7 +214,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           // Password Field
                           const Text(
-                            'Password * (6 - 72 characters)',
+                            'Password *',
                             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.textDark),
                           ),
                           const SizedBox(height: 6),
@@ -249,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 4),
                           const Text(
-                            'Choose a unique password not used for other accounts to avoid browser password warnings.',
+                            'Must be at least 6 characters.',
                             style: TextStyle(fontSize: 11, color: AppTheme.textMuted),
                           ),
                           const SizedBox(height: AppTheme.space16),
@@ -309,7 +309,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Text('Registering account...', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
                                     ],
                                   )
-                                : const Text('Register & Access Fleet', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                                : const Text('Create Account', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                           ),
                         const SizedBox(height: AppTheme.space16),
 

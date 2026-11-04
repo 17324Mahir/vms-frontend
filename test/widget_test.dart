@@ -37,9 +37,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('STARK GROUP'), findsAtLeast(1));
-    expect(find.text('Stark Industries Fleet Enterprise Portal'), findsOneWidget);
     expect(find.text('Sign In'), findsAtLeast(1));
-    expect(find.text('Register Account'), findsOneWidget);
+    expect(find.text('Create Account'), findsAtLeast(1));
+    expect(find.text('Vehicle Registry'), findsOneWidget);
+    expect(find.text('Duplicate Prevention'), findsOneWidget);
+    expect(find.text('Status Tracking'), findsOneWidget);
   });
 
   testWidgets('0b. Register screen renders input fields and navigates to sign in',
@@ -54,7 +56,7 @@ void main() {
     expect(find.text('Create an Account'), findsOneWidget);
     expect(find.text('Full Name *'), findsOneWidget);
     expect(find.text('Email Address *'), findsOneWidget);
-    expect(find.text('Register & Access Fleet'), findsOneWidget);
+    expect(find.text('Create Account'), findsOneWidget);
   });
 
   testWidgets('1. Login screen renders with Stark Group branding and input fields',
@@ -344,7 +346,7 @@ void main() {
     expect(find.text('Sign in to your account'), findsOneWidget);
   });
 
-  testWidgets('12. Home screen toggles between preview views (Fleet Table and Registration Form)',
+  testWidgets('12. Home screen renders core feature cards and mock fleet preview',
       (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1280, 1000);
     tester.view.devicePixelRatio = 1.0;
@@ -353,24 +355,21 @@ void main() {
     await tester.pumpWidget(const StarkVmsApp());
     await tester.pumpAndSettle();
 
-    final previewChip = find.text('Fleet Table View');
+    expect(find.text('Fleet Registry Preview'), findsOneWidget);
+    expect(find.text('STK-0042'), findsOneWidget);
+    expect(find.text('Audi R8 V10 Plus'), findsOneWidget);
+
+    final featuresCard = find.text('Vehicle Registry');
     await tester.scrollUntilVisible(
-      previewChip,
+      featuresCard,
       500,
       scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
 
-    expect(previewChip, findsOneWidget);
-    expect(find.text('Vehicle Registration Form'), findsOneWidget);
-    expect(find.textContaining('Fleet Registry (12 Vehicles)'), findsOneWidget);
-
-    // Switch to Registration Form View
-    await tester.tap(find.text('Vehicle Registration Form'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Register New Vehicle Form Layout'), findsOneWidget);
-    expect(find.text('e.g. STK-0042'), findsOneWidget);
+    expect(featuresCard, findsOneWidget);
+    expect(find.text('Duplicate Prevention'), findsOneWidget);
+    expect(find.text('Status Tracking'), findsOneWidget);
   });
 
   testWidgets('13. Home screen responsive mobile menu renders and navigates to Register',
@@ -389,11 +388,16 @@ void main() {
     await tester.tap(menuBtn);
     await tester.pumpAndSettle();
 
-    // Modal bottom sheet should appear with navigation items
-    expect(find.text('Capabilities'), findsOneWidget);
-    expect(find.text('How It Works'), findsOneWidget);
-    expect(find.text('Fleet Preview'), findsOneWidget);
-    expect(find.text('System Status'), findsOneWidget);
+    // Modal bottom sheet should appear with direct navigation actions
+    expect(find.text('STARK GROUP VMS'), findsOneWidget);
+    expect(find.text('Create Account'), findsAtLeast(1));
+    expect(find.text('Sign in'), findsOneWidget);
+
+    // Tap Create Account in the mobile drawer
+    await tester.tap(find.text('Create Account').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Create an Account'), findsOneWidget);
   });
 
   testWidgets('14. Home screen adapts responsively across 1440, 1024, 768, and 390 viewports',

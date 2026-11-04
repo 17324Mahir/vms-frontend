@@ -276,7 +276,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
               ),
               SizedBox(height: 2),
               Text(
-                'Manage and monitor registered fleet vehicles across all Stark Group companies.',
+                'Manage and monitor registered fleet vehicles.',
                 style: TextStyle(fontSize: 13, color: AppTheme.textMuted),
               ),
             ],
@@ -310,7 +310,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.refresh, size: 18),
-              tooltip: 'Refresh fleet from database',
+              tooltip: 'Refresh',
               onPressed: isLoading ? null : () => _loadVehicles(silent: true),
             ),
           ],
@@ -526,7 +526,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
             ),
             SizedBox(height: AppTheme.space4),
             Text(
-              'Connecting to Spring Boot backend database.',
+              'Please wait a moment.',
               style: TextStyle(fontSize: 13, color: AppTheme.textMuted),
             ),
           ],

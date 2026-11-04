@@ -71,19 +71,13 @@ class AppShell extends StatelessWidget {
                       onPressed: () => Scaffold.of(ctx).openDrawer(),
                     ),
                   )),
-        title: Row(
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(width: AppTheme.space12),
-            _buildDemoChip(),
-          ],
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textDark,
+          ),
         ),
         actions: [
           if (primaryAction != null) ...[
@@ -100,36 +94,6 @@ class AppShell extends StatelessWidget {
           if (isDesktop) _buildDesktopSidebar(context),
           Expanded(child: child),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDemoChip() {
-    return Tooltip(
-      message:
-          'Authenticated session. Persistent fleet data synchronized with backend database.',
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0FDF4), // Green 50
-          borderRadius: BorderRadius.circular(AppTheme.radiusSm),
-          border: Border.all(color: const Color(0xFFBBF7D0)), // Green 200
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.verified_user_outlined, size: 12, color: Color(0xFF15803D)),
-            SizedBox(width: 4),
-            Text(
-              'Secure Session',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF15803D),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

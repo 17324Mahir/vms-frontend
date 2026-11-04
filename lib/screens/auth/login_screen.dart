@@ -143,8 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         _buildSubmitButton(),
                         const SizedBox(height: AppTheme.space16),
                         _buildRegisterLink(),
-                        const SizedBox(height: AppTheme.space16),
-                        _buildSecurityNotice(),
                       ],
                     ),
                   ),
@@ -210,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: AppTheme.space4),
         const Text(
-          'Administrative console for managing fleet operations and vehicle records.',
+          'Enter your credentials to access the fleet registry.',
           style: TextStyle(
             fontSize: 13,
             color: AppTheme.textMuted,
@@ -411,20 +409,6 @@ class _LoginScreenState extends State<LoginScreen> {
           label: const Text('Return to Home', style: TextStyle(fontSize: 12)),
         ),
       ],
-    );
-  }
-
-  Widget _buildSecurityNotice() {
-    return const Center(
-      child: Text(
-        'Protected by Secure Account Authentication\nSessions are stored in memory only and expire after 15 minutes of inactivity',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 11,
-          color: AppTheme.textMuted,
-          height: 1.4,
-        ),
-      ),
     );
   }
 }

@@ -128,7 +128,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
       setState(() {
         _isLoadingRecord = false;
         _loadRecordError = e.isNotFound
-            ? 'Vehicle #$id was not found in the fleet database.'
+            ? 'Vehicle #$id was not found.'
             : e.message;
       });
     } on NetworkException catch (e) {
@@ -271,7 +271,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Vehicle record is no longer available in the database.',
+              'Vehicle record is no longer available.',
             ),
             backgroundColor: AppTheme.errorRed,
             behavior: SnackBarBehavior.floating,
@@ -334,7 +334,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
               CircularProgressIndicator(),
               SizedBox(height: AppTheme.space16),
               Text(
-                'Loading vehicle record from database...',
+                'Loading vehicle details...',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -475,8 +475,8 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         const SizedBox(height: 2),
         Text(
           widget.isEditing
-              ? 'Update existing fleet asset parameters and operational state.'
-              : 'Add a new vehicle record to the Stark Group fleet registry.',
+              ? 'Update vehicle details and status.'
+              : 'Add a new vehicle to the fleet registry.',
           style: const TextStyle(fontSize: 13, color: AppTheme.textMuted),
         ),
       ],
@@ -490,8 +490,8 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('1. Vehicle Identity',
-                'Registration number and owning subsidiary'),
+            _buildSectionTitle('Vehicle Identity',
+                'Registration number and company'),
             const SizedBox(height: AppTheme.space16),
             if (isDesktop)
               Row(
@@ -520,8 +520,8 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('2. Vehicle Details',
-                'Category, manufacturer brand, and model designation'),
+            _buildSectionTitle('Vehicle Details',
+                'Type, brand, and model'),
             const SizedBox(height: AppTheme.space16),
             if (isDesktop)
               Row(
@@ -554,8 +554,8 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle('3. Operational State',
-                'Current deployment status within the fleet'),
+            _buildSectionTitle('Fleet Status',
+                'Current deployment status'),
             const SizedBox(height: AppTheme.space16),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 360),

@@ -227,7 +227,7 @@ void main() {
       expect(find.text('STK-PRESERVED'), findsOneWidget);
 
       // Trigger refresh
-      final refreshBtn = find.byTooltip('Refresh fleet from database');
+      final refreshBtn = find.byTooltip('Refresh');
       await tester.tap(refreshBtn);
       await tester.pumpAndSettle();
 
