@@ -304,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
           textInputAction: TextInputAction.next,
           onFieldSubmitted: (_) => _passwordFocusNode.requestFocus(),
           decoration: const InputDecoration(
-            hintText: 'name@company.com',
+            hintText: 'user@example.com',
           ),
           validator: (value) {
             final trimmed = value?.trim() ?? '';

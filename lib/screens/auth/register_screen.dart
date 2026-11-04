@@ -199,7 +199,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             style: const TextStyle(color: AppTheme.textDark, fontSize: 14),
-                            decoration: _inputDecoration('e.g. name@company.com', Icons.email_outlined),
+                            decoration: _inputDecoration('e.g. user@example.com', Icons.email_outlined),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'Please enter your email address.';

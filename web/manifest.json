@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#F8FAFC",
     "theme_color": "#0F172A",
-    "description": "Official fleet operations, registration, and lifecycle management platform for Stark Group.",
+    "description": "Fleet operations, vehicle registry, and asset tracking portal.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
