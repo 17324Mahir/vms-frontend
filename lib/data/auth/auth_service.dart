@@ -143,6 +143,7 @@ class AuthService {
           sessionId: ++_sessionCounter,
         );
 
+        VehicleRepository.instance.clearCache();
         _currentSession = session;
         sessionExpiredMessage.value = null;
         sessionNotifier.value = session;
@@ -221,6 +222,7 @@ class AuthService {
           sessionId: ++_sessionCounter,
         );
 
+        VehicleRepository.instance.clearCache();
         _currentSession = session;
         sessionExpiredMessage.value = null;
         sessionNotifier.value = session;
@@ -270,6 +272,33 @@ class AuthService {
       code: 'HTTP_${response.statusCode}',
       message: 'Registration failed with status code ${response.statusCode}.',
     );
+  }
+
+  /// Checks whether an account exists based strictly on email address.
+  Future<bool> checkEmailExists(String email, {http.Client? client}) async {
+    final httpClient = client ?? http.Client();
+    final isCustomClient = client != null;
+
+    try {
+      final response = await httpClient
+          .get(
+            ApiConfig.authCheckEmailUri(email),
+            headers: const {'Accept': 'application/json'},
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) {
+          return decoded['exists'] as bool? ?? false;
+        }
+      }
+      return false;
+    } catch (_) {
+      return false;
+    } finally {
+      if (!isCustomClient) httpClient.close();
+    }
   }
 
   /// Centrally handles 401 Unauthorized responses emitted by protected API endpoints.

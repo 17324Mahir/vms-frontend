@@ -25,6 +25,20 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isSubmitting = false;
   String? _authErrorMessage;
+  bool _initializedFromArgs = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initializedFromArgs) {
+      _initializedFromArgs = true;
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is String && args.isNotEmpty && _emailController.text.isEmpty) {
+        _emailController.text = args;
+        _passwordFocusNode.requestFocus();
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -395,7 +409,11 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushReplacementNamed(AppRouter.registerRoute);
+                final email = _emailController.text.trim();
+                Navigator.of(context).pushReplacementNamed(
+                  AppRouter.registerRoute,
+                  arguments: email.isNotEmpty ? email : null,
+                );
               },
               child: const Text('Register here', style: TextStyle(fontWeight: FontWeight.bold)),
             ),

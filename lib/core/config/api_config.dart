@@ -43,4 +43,8 @@ class ApiConfig {
 
   /// Authentication register endpoint URI: `${baseUri}/api/auth/register`
   static Uri get authRegisterUri => baseUri.replace(path: '/api/auth/register');
+
+  /// Authentication email availability check endpoint URI: `${baseUri}/api/auth/check-email?email={email}`
+  static Uri authCheckEmailUri(String email) =>
+      baseUri.replace(path: '/api/auth/check-email', queryParameters: {'email': email.trim().toLowerCase()});
 }
