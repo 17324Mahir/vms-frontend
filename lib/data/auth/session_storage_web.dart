@@ -47,3 +47,4 @@ class _WebSessionStorage extends SessionStorage {
 }
 
 SessionStorage createSessionStorage() => _WebSessionStorage();
+

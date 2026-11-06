@@ -17,3 +17,4 @@ class _StubSessionStorage extends SessionStorage {
 }
 
 SessionStorage createSessionStorage() => _StubSessionStorage();
+

@@ -33,3 +33,4 @@ abstract class SessionStorage {
   /// Remove all session keys managed by this storage.
   void clear();
 }
+
